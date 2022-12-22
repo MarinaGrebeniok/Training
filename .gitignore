@@ -38,4 +38,4 @@ gradlew.bat
 *.iml
 *.ipr
 *.iws
-*.DS_Store
+.DS_Store
