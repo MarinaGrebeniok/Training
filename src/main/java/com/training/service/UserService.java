@@ -2,55 +2,55 @@ package com.training.service;
 
 import com.training.dao.UserDAO;
 import com.training.domain.User;
+import com.training.dto.UserDTO;
 import com.training.exception.CommonException;
-import com.training.grpc.UserServiceOuterClass;
 
 import static java.util.Objects.isNull;
 
 public class UserService {
     private static final String USER_NOT_FOUND = "User not found";
 
-    private UserDAO userDao = new UserDAO();
-    public void deleteUser(UserServiceOuterClass.DeleteUserRequest request) {
+    private final UserDAO userDao = new UserDAO();
+    public void deleteUser(Integer userId) {
 
-        User user = userDao.getUser(request.getUserId());
+        User user = userDao.getUser(userId);
 
         if (isNull(user)) {
-            new CommonException(USER_NOT_FOUND);
+            throw new  CommonException(USER_NOT_FOUND);
         }
 
         new UserDAO().deleteUser(user);
     }
 
-    public User updateUser(UserServiceOuterClass.UpdateUserRequest request) {
-        User user = userDao.getUser(request.getUserId());
+    public User updateUser(UserDTO userDTO) {
+        User user = userDao.getUser(userDTO.getUserId());
 
         if (isNull(user)) {
-            new CommonException(USER_NOT_FOUND);
+            throw new CommonException(USER_NOT_FOUND);
         }
 
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setAge(request.getAge());
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setAge(userDTO.getAge());
 
         return new UserDAO().updateUser(user);
     }
 
-    public User getUser(UserServiceOuterClass.GetUserRequest request) {
-        User user = userDao.getUser(request.getUserId());
+    public User getUser(Integer userId) {
+        User user = userDao.getUser(userId);
 
         if (isNull(user)) {
-            new CommonException(USER_NOT_FOUND);
+            throw new CommonException(USER_NOT_FOUND);
         }
 
         return user;
     }
 
-    public User createUser(UserServiceOuterClass.CreateUserRequest request) {
+    public User createUser(UserDTO userDTO) {
         User buildUser = User.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .age(request.getAge())
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .age(userDTO.getAge())
                 .build();
 
         return new UserDAO().saveUser(buildUser);

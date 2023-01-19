@@ -1,6 +1,7 @@
 package com.training.controllers;
 
 import com.training.domain.User;
+import com.training.dto.UserDTO;
 import com.training.grpc.UserServiceGrpc;
 import com.training.grpc.UserServiceOuterClass;
 import com.training.service.UserService;
@@ -12,7 +13,7 @@ public class UserControllersImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void deleteUser(UserServiceOuterClass.DeleteUserRequest request,
                            StreamObserver<UserServiceOuterClass.DeleteUserResponse> responseObserver) {
-        userServiceImpl.deleteUser(request);
+        userServiceImpl.deleteUser(request.getUserId());
 
         UserServiceOuterClass.DeleteUserResponse response = UserServiceOuterClass.DeleteUserResponse.newBuilder()
                 .setMessage("User deleted")
@@ -25,7 +26,14 @@ public class UserControllersImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void updateUser(UserServiceOuterClass.UpdateUserRequest request,
                            StreamObserver<UserServiceOuterClass.UpdateUserResponse> responseObserver) {
-        User user = userServiceImpl.updateUser(request);
+        UserDTO userDTO = UserDTO.builder()
+                .userId(request.getUserId())
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .age(request.getAge())
+                .build();
+
+        User user = userServiceImpl.updateUser(userDTO);
 
         UserServiceOuterClass.UpdateUserResponse response = UserServiceOuterClass.UpdateUserResponse.newBuilder()
                 .setUser(UserServiceOuterClass.User.newBuilder()
@@ -43,7 +51,7 @@ public class UserControllersImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void getUser(UserServiceOuterClass.GetUserRequest request,
                         StreamObserver<UserServiceOuterClass.GetUserResponse> responseObserver) {
-        User user = userServiceImpl.getUser(request);
+        User user = userServiceImpl.getUser(request.getUserId());
 
         UserServiceOuterClass.GetUserResponse response = UserServiceOuterClass.GetUserResponse.newBuilder()
                 .setUser(UserServiceOuterClass.User.newBuilder()
@@ -61,7 +69,13 @@ public class UserControllersImpl extends UserServiceGrpc.UserServiceImplBase {
     @Override
     public void createUser(UserServiceOuterClass.CreateUserRequest request,
                            StreamObserver<UserServiceOuterClass.CreateUserResponse> responseObserver) {
-        User buildUser = userServiceImpl.createUser(request);
+        UserDTO userDTO = UserDTO.builder()
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .age(request.getAge())
+                .build();
+
+        User buildUser = userServiceImpl.createUser(userDTO);
 
         UserServiceOuterClass.CreateUserResponse response = UserServiceOuterClass.CreateUserResponse
                 .newBuilder()

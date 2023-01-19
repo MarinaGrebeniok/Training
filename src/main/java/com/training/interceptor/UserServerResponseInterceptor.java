@@ -15,9 +15,7 @@ public class UserServerResponseInterceptor extends InterceptorUtils implements S
                 new ForwardingServerCall.SimpleForwardingServerCall<ReqT, RespT>(call) {
                     @Override
                     public void sendHeaders(Metadata responseHeaders) {
-                        getRequestIdHeader(headers).ifPresent(header -> {
-                            putRequestIdHeader(responseHeaders, header);
-                        });
+                        getRequestIdHeader(headers).ifPresent(header -> putRequestIdHeader(responseHeaders, header));
 
                         super.sendHeaders(responseHeaders);
                     }
